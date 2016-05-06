@@ -9,6 +9,7 @@ import (
 )
 
 func writeHanlder(filename string, w io.WriterTo) error {
+    fmt.Printf("Receiving file %s\n", filename)
     file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0644)
     if err != nil {
         fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -30,6 +31,7 @@ func writeHanlder(filename string, w io.WriterTo) error {
 }
 
 func readHandler(filename string, r io.ReaderFrom) error {
+    fmt.Printf("Sending file %s\n", filename)
     file, err := os.Open(filename)
     if err != nil {
         fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -55,6 +57,7 @@ func main() {
     // use nil in place of handler to disable read or write operations
     s := tftp.NewServer(readHandler, writeHanlder)
     s.SetTimeout(5 * time.Second) // optional
+    fmt.Println("Starting tftpd server")
     err := s.ListenAndServe(":69") // blocks until s.Shutdown() is called
     if err != nil {
         fmt.Fprintf(os.Stdout, "server: %v\n", err)
